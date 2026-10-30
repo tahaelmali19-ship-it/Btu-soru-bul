@@ -1,7 +1,7 @@
-import streamlit as st
-from sources import DEFAULT_BOOKS, search_pdfs, fetch_pdf_text, topic_window
-from extractor import extract_qa
-from notes import make_notes, solve_with_claude
+import streamlit as st 
+from sources import DEFAULT_BOOKS, search_pdfs, fetch_pdf_text, topic_window 1793353008180.jpeg
+from extractor import extract_qa 1793353008180.jpeg
+from notes import make_notes, solve_with_claude 1793353008180.jpeg
 
 st.set_page_config(page_title="BTÜ Ders Avcısı", page_icon="📚", layout="wide")
 st.title("📚 BTÜ Akıllı Ders Notu, Soru ve Çözüm Avcısı")
