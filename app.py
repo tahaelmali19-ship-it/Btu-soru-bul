@@ -35,7 +35,6 @@ with tab1:
                 st.success("Çözüm ve Kaynak Eşleştirmesi Tamamlandı!")
                 
                 st.markdown("### 📌 Bu Bilginin Alındığı Üniversite Kaynağı:")
-                # Kullanıcıya sorunun hangi kaynaktan alındığını net şekilde gösteriyoruz
                 st.info(f"📚 **Kaynak Adı:** {kaynaklar[0]['title']}\n🔗 **Bağlantı:** [Kaynağa Git]({kaynaklar[0]['href']})")
                 
                 st.markdown("### 🤖 Yapay Zeka Çözüm ve Analiz Önerisi:")
@@ -52,7 +51,7 @@ with tab1:
 
 with tab2:
     st.subheader(f"{selected_course} - {selected_category} Ders Notları")
-    st.markdown(f"**{selected_selected = selected_category}** odaklı otomatik ders özeti ve önemli ipuçları bu alanda yer almaktadır.")
+    st.markdown(f"**{selected_category}** odaklı otomatik ders özeti ve önemli ipuçları bu alanda yer almaktadır.")
     st.markdown("- Üniversite müfredatına uyumlu konu anlatımı.")
     st.markdown("- Sınavlarda çıkabilecek soru kalıpları.")
 
