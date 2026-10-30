@@ -1,62 +1,61 @@
 import streamlit as st
-from sources import DEFAULT_BOOKS, search_pdfs, fetch_pdf_text
+from sources import DEFAULT_BOOKS, search_pdfs
 
 st.set_page_config(page_title="BTÜ Akıllı Ders Asistanı", page_icon="🎓", layout="wide")
 
 st.title("🎓 BTÜ Endüstri Mühendisliği Akıllı Asistanı")
-st.markdown("Ders notlarını arayın, soruları çözdürün ve çalışma materyallerine hızlıca erişin.")
+st.markdown("Ders bazlı kategoriler, üniversite kaynakları ve akıllı soru çözüm sistemi.")
 
-# Sidebar - Ders Seçimi
-st.sidebar.header("📚 Ders ve Kaynak Yönetimi")
-course_list = list(DEFAULT_BOOKS.keys()) + ["Diğer (Özel Ders)"]
-course = st.sidebar.selectbox("Ders Seçin", course_list)
+# Sidebar - Ders ve Kategori Seçimi
+st.sidebar.header("📚 Ders ve Kategori Filtresi")
+course_names = list(DEFAULT_BOOKS.keys())
+selected_course = st.sidebar.selectbox("Ders Seçin", course_names)
 
-if course == "Diğer (Özel Ders)":
-    course_name = st.sidebar.text_input("Ders Adı Girin", "Örn: Tesis Planlama")
-else:
-    course_name = course
+# Seçilen dersin alt kategorilerini al
+categories = DEFAULT_BOOKS[selected_course]["kategoriler"]
+selected_category = st.sidebar.selectbox("Soru / Konu Kategorisi", categories)
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("📖 Önerilen Kaynaklar")
-if course in DEFAULT_BOOKS:
-    for url in DEFAULT_BOOKS[course]:
-        st.sidebar.markdown(f"- [PDF Kaynağını Aç]({url})")
+st.sidebar.subheader("📖 Üniversitenin Önerdiği Kaynaklar")
+for kaynak in DEFAULT_BOOKS[selected_course]["kaynaklar"]:
+    st.sidebar.markdown(f"- [{kaynak['title']}]({kaynak['href']})")
 
-# Ana Ekran Sekmeleri (Interaktif Butonlar ve Alanlar)
-tab1, tab2, tab3 = st.tabs(["🔍 Soru & Çözüm Avcısı", "📝 Akıllı Ders Notu", "💡 Formül & Kavramlar"])
+# Ana Ekran Sekmeleri
+tab1, tab2, tab3 = st.tabs(["🔍 Soru Çöz & Kaynak Eşleştir", "📝 Akıllı Ders Notu", "💡 Formül & Özet"])
 
 with tab1:
-    st.subheader("Sorunuzu veya Aradığınız Konuyu Girin")
-    query = st.text_input("Örn: Lineer programlama simpleks yöntemi adımları nelerdir?", placeholder="Sorunuzu buraya yazın...")
+    st.subheader(f"Ders: {selected_course} | Kategori: {selected_category}")
+    query = st.text_input("Çözülmesini istediğiniz soruyu veya konuyu yazın:", placeholder="Örn: Bu kategorideki optimal çözüm adımları nelerdir?")
     
-    if st.button("Soru Çöz ve Kaynak Ara", type="primary"):
+    if st.button("Soruyu Çöz ve Kaynağı Göster", type="primary"):
         if query:
-            with st.spinner("Kaynaklar taranıyor ve çözüm üretiliyor..."):
-                results = search_pdfs(query)
-                st.success("Sonuçlar Başarıyla Bulundu!")
-                st.markdown("### 📌 İlgili Kaynaklar:")
-                for res in results:
-                    st.markdown(f"- **{res['title']}**: [{res['href']}]({res['href']})")
+            with st.spinner("Üniversite kaynakları taranıyor ve çözüm üretiliyor..."):
+                kaynaklar = search_pdfs(selected_course, selected_category, query)
                 
-                st.markdown("---")
-                st.markdown("### 🤖 Yapay Zeka Çözüm Önerisi:")
-                st.info(f"'{query}' konusu için Endüstri Mühendisliği perspektifinden analiz: Bu problem matematiksel modelleme, kısıtlar ve amaç fonksiyonu tanımlanarak adım adım çözülür.")
+                st.success("Çözüm ve Kaynak Eşleştirmesi Tamamlandı!")
+                
+                st.markdown("### 📌 Bu Bilginin Alındığı Üniversite Kaynağı:")
+                # Kullanıcıya sorunun hangi kaynaktan alındığını net şekilde gösteriyoruz
+                st.info(f"📚 **Kaynak Adı:** {kaynaklar[0]['title']}\n🔗 **Bağlantı:** [Kaynağa Git]({kaynaklar[0]['href']})")
+                
+                st.markdown("### 🤖 Yapay Zeka Çözüm ve Analiz Önerisi:")
+                st.markdown(f"""
+                * **Seçilen Kategori:** {selected_category}
+                * **Soru/Konu:** {query}
+                * **Çözüm Adımları:** 
+                  1. Verilen kısıtlar ve parametreler üniversite kaynak standardına göre modellenir.
+                  2. İlgili formül uygulanarak matematiksel çözüm türetilir.
+                  3. Çıkan sonuç Endüstri Mühendisliği perspektifinden yorumlanır.
+                """)
         else:
-            st.warning("Lütfen aramak için bir soru veya konu yazın.")
+            st.warning("Lütfen bir soru veya konu girin.")
 
 with tab2:
-    st.subheader("Otomatik Ders Notu Özeti")
-    note_topic = st.text_input("Özetlenmesini istediğiniz konu başlığı:", "Yöneylem Araştırması Temelleri")
-    if st.button("Ders Notu Oluştur"):
-        st.success(f"'{note_topic}' için özet notlar hazırlandı:")
-        st.markdown("""
-        * **Ana Tanım:** Sistemlerin optimizasyonu ve verimlilik analizi.
-        * **Temel Formülasyon:** Amaç fonksiyonu $\\max Z = c^T x$ kısıtlar altında $Ax \\le b$.
-        * **Uygulama Alanları:** Üretim planlama, lojistik, envanter yönetimi.
-        """)
+    st.subheader(f"{selected_course} - {selected_category} Ders Notları")
+    st.markdown(f"**{selected_selected = selected_category}** odaklı otomatik ders özeti ve önemli ipuçları bu alanda yer almaktadır.")
+    st.markdown("- Üniversite müfredatına uyumlu konu anlatımı.")
+    st.markdown("- Sınavlarda çıkabilecek soru kalıpları.")
 
 with tab3:
-    st.subheader("Hızlı Formül ve Kavram Sözlüğü")
-    st.markdown("Seçilen ders kapsamında sık kullanılan formüller ve kavramlar:")
-    st.markdown("- **Üretim Verimliliği:** Çıktı / Girdi")
-    st.markdown("- **Kapasite Kullanım Oranı:** Gerçekleşen Üretim / Toplam Kapasite")
+    st.subheader("Hızlı Formül ve Kavramlar")
+    st.markdown(f"**{selected_course}** dersi için bu kategoride bilmeniz gereken temel formüller.")
