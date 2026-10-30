@@ -1,35 +1,79 @@
-DEFAULT_BOOKS = {
-    "Endüstri Mühendisliğine Giriş": {
-        "kategoriler": ["Genel Kavramlar", "Sistem Analizi", "Üretim ve Verimlilik"],
-        "kaynaklar": [
-            {"title": "Boğaziçi Üniversitesi - Intro to IE", "href": "https://www.ie.boun.edu.tr/sites/default/files/inline-files/Intro_to_IE.pdf"},
-            {"title": "BTÜ Ders Notu - Endüstri Mühendisliğine Giriş Rehberi", "href": "https://example.com/btu_ie_giris.pdf"}
-        ]
+BTU_DATABASE = {
+    "Endüstri Mühendisliği": {
+        "1. Sınıf": {
+            "Genel Matematik I": {
+                "ana_kaynak": "Thomas Calculus & BTU Matematik Paneli",
+                "kaynak_url": "https://www.math.ust.hk/~machas/vector-calculus.pdf",
+                "bolumler": {
+                    "Limit ve Süreklilik": [
+                        {
+                            "soru": "Soru 1: f(x) = (x^2 - 4) / (x - 2) fonksiyonunun x -> 2 giderken limiti nedir?",
+                            "cozum": "Pay çarpanlara ayrılır: (x-2)(x+2) / (x-2) = x+2. x=2 için limit 4 olarak bulunur.",
+                            "kaynak_detay": "Thomas Calculus - Bölüm 2.2, Sayfa 112"
+                        },
+                        {
+                            "soru": "Soru 2: lim_{x -> 0} (sin(x) / x) ifadesinin değerini bulunuz.",
+                            "cozum": "Trigonometrik limit teoremine ve L'Hopital kuralına göre bu limit 1'e eşittir.",
+                            "kaynak_detay": "Thomas Calculus - Bölüm 2.4, Sayfa 135"
+                        },
+                        {
+                            "soru": "Soru 3: f(x) = |x| / x fonksiyonunun x -> 0 için sağdan ve soldan limitleri nedir?",
+                            "cozum": "Sağdan limit 1, soldan limit -1'dir. Limitler farklı olduğu için x->0'da limit yoktur.",
+                            "kaynak_detay": "BTU Örnek Soru Bankası - Analiz I"
+                        }
+                    ],
+                    "Türev ve Uygulamaları": [
+                        {
+                            "soru": "Soru 1: f(x) = 3x^3 - 5x^2 + 7 fonksiyonunun türevi f'(x) nedir?",
+                            "cozum": "Polinom türev kuralı uygulanır: f'(x) = 9x^2 - 10x",
+                            "kaynak_detay": "Thomas Calculus - Bölüm 3.1, Sayfa 180"
+                        }
+                    ]
+                }
+            },
+            "Genel Fizik I": {
+                "ana_kaynak": "OpenStax University Physics Vol 1",
+                "kaynak_url": "https://openstax.org/details/books/university-physics-volume-1",
+                "bolumler": {
+                    "Vektörler ve Kinematik": [
+                        {
+                            "soru": "Soru 1: İki vektörün skaler çarpımı hangi durumlarda sıfır olur?",
+                            "cozum": "Vektörler birbirine dik (90 derece) açıyla olduğunda skaler çarpım sıfırdır.",
+                            "kaynak_detay": "University Physics Vol 1 - Bölüm 2"
+                        }
+                    ]
+                }
+            },
+            "Endüstri Mühendisliğine Giriş": {
+                "ana_kaynak": "BTU Bölüm Ders Notları ve Endüstriyel Tasarım Rehberi",
+                "kaynak_url": "https://www.ie.boun.edu.tr/sites/default/files/inline-files/Intro_to_IE.pdf",
+                "bolumler": {
+                    "Sistem ve Verimlilik Kavramları": [
+                        {
+                            "soru": "Soru 1: Endüstri mühendisliğinde toplam verimlilik formülü nasıl ifade edilir?",
+                            "cozum": "Toplam Verimlilik = Toplam Çıktı / Toplam Girdi olarak ifade edilir.",
+                            "kaynak_detay": "BTU IE Giriş Notları - Bölüm 1"
+                        }
+                    ]
+                }
+            }
+        }
     },
-    "Yöneylem Araştırması / Lineer Programlama": {
-        "kategoriler": ["Lineer Programlama (Simplex)", "Ulaştırma ve Atama Modelleri", "Ağ Modelleri", "Bütünleşik Optimizasyon"],
-        "kaynaklar": [
-            {"title": "Operations Research: Applications and Algorithms (Winston)", "href": "https://www.sde.cite.iff.edu.br/wp-content/uploads/2020/05/Operations-Research-Applications-and-Algorithms.pdf"},
-            {"title": "BTÜ Yöneylem Ders Notları ve Çözümlü Problemler", "href": "https://example.com/btu_yoneylem.pdf"}
-        ]
-    },
-    "Matematik / Analiz": {
-        "kategoriler": ["Limit ve Süreklilik", "Türev ve Uygulamaları", "İntegral ve Alan", "Çok Katlı İntegraller"],
-        "kaynaklar": [
-            {"title": "HKUST - Vector Calculus & Mathematical Analysis", "href": "https://www.math.ust.hk/~machas/vector-calculus.pdf"},
-            {"title": "BTÜ Matematik Bölümü Örnek Soru Bankası", "href": "https://example.com/btu_matematik.pdf"}
-        ]
-    },
-    "Fizik": {
-        "kategoriler": ["Mekanik ve Vektörler", "Newton Kanunları", "İş ve Enerji", "Momentum"],
-        "kaynaklar": [
-            {"title": "OpenStax University Physics Volume 1", "href": "https://openstax.org/details/books/university-physics-volume-1"},
-            {"title": "BTÜ Fizik Laboratuvar ve Problem Kılavuzu", "href": "https://example.com/btu_fizik.pdf"}
-        ]
+    "Bilgisayar Mühendisliği": {
+        "1. Sınıf": {
+            "Genel Matematik I": {
+                "ana_kaynak": "Thomas Calculus",
+                "kaynak_url": "https://www.math.ust.hk/~machas/vector-calculus.pdf",
+                "bolumler": {
+                    "Limit ve Süreklilik": [
+                        {
+                            "soru": "Soru 1: lim_{x -> inf} (2x + 1) / (x - 3) limitini hesaplayınız.",
+                            "cozum": "Pay ve payda x'in en yüksek derecesine (x) bölünür, sonuç 2 çıkar.",
+                            "kaynak_detay": "Thomas Calculus - Bölüm 2.5"
+                        }
+                    ]
+                }
+            }
+        }
     }
 }
-
-def search_pdfs(course_name, category, query):
-    # Seçilen derse ve kategoriye ait kaynakları ve yapay zeka analizini simüle eder
-    course_data = DEFAULT_BOOKS.get(course_name, {"kaynaklar": [{"title": "Genel Akademik Kaynak", "href": "https://example.com"}]})
-    return course_data["kaynaklar"]
