@@ -1,60 +1,59 @@
 import streamlit as st
-from sources import DEFAULT_BOOKS, search_pdfs
+from sources import BTU_DATABASE
 
-st.set_page_config(page_title="BTÜ Akıllı Ders Asistanı", page_icon="🎓", layout="wide")
+st.set_page_config(page_title="BTU Akıllı Akademik Asistan", page_icon="🎓", layout="wide")
 
-st.title("🎓 BTÜ Endüstri Mühendisliği Akıllı Asistanı")
-st.markdown("Ders bazlı kategoriler, üniversite kaynakları ve akıllı soru çözüm sistemi.")
+st.title("🎓 BTU Akademik Ders ve Soru Bankası Asistanı")
+st.markdown("Bölüm, sınıf, ders ve konu seçerek üniversite kaynaklı tüm sorulara ve çözümlere ulaşın.")
 
-# Sidebar - Ders ve Kategori Seçimi
-st.sidebar.header("📚 Ders ve Kategori Filtresi")
-course_names = list(DEFAULT_BOOKS.keys())
-selected_course = st.sidebar.selectbox("Ders Seçin", course_names)
+# Hiyerarşik Sidebar Menü (Bölüm -> Sınıf -> Ders -> Bölüm/Konu)
+st.sidebar.header("🧭 Akademik Filtreleme")
 
-# Seçilen dersin alt kategorilerini al
-categories = DEFAULT_BOOKS[selected_course]["kategoriler"]
-selected_category = st.sidebar.selectbox("Soru / Konu Kategorisi", categories)
+# 1. Bölüm Seçimi
+bolum_listesi = list(BTU_DATABASE.keys())
+secilen_bolum = st.sidebar.selectbox("1️⃣ Bölüm Seçin", bolum_listesi)
+
+# 2. Sınıf Seçimi
+sinif_listesi = list(BTU_DATABASE[secilen_bolum].keys())
+secilen_sinif = st.sidebar.selectbox("2️⃣ Sınıf Seçin", sinif_listesi)
+
+# 3. Ders Seçimi
+ders_listesi = list(BTU_DATABASE[secilen_bolum][secilen_sinif].keys())
+secilen_ders = st.sidebar.selectbox("3️⃣ Ders Seçin", ders_listesi)
+
+# Ders detaylarını al
+ders_bilgi = BTU_DATABASE[secilen_bolum][secilen_sinif][secilen_ders]
+
+# 4. Konu / Bölüm Seçimi (Örn: Limit ve Süreklilik)
+konu_listesi = list(ders_bilgi["bolumler"].keys())
+secilen_konu = st.sidebar.selectbox("4️⃣ Kitap / Konu Bölümü Seçin", konu_listesi)
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("📖 Üniversitenin Önerdiği Kaynaklar")
-for kaynak in DEFAULT_BOOKS[selected_course]["kaynaklar"]:
-    st.sidebar.markdown(f"- [{kaynak['title']}]({kaynak['href']})")
+st.sidebar.subheader("📖 Üniversite Ana Kaynağı")
+st.sidebar.markdown(f"**{ders_bilgi['ana_kaynak']}**")
+st.sidebar.markdown(f"[🔗 Kaynak PDF / Sayfaya Git]({ders_bilgi['kaynak_url']})")
 
-# Ana Ekran Sekmeleri
-tab1, tab2, tab3 = st.tabs(["🔍 Soru Çöz & Kaynak Eşleştir", "📝 Akıllı Ders Notu", "💡 Formül & Özet"])
+# Ana Ekran
+st.header(f"📚 {secilen_ders} — {secilen_konu}")
+st.markdown(f"**Seçilen Bölüm:** {secilen_bolum} | **Sınıf:** {secilen_sinif}")
 
-with tab1:
-    st.subheader(f"Ders: {selected_course} | Kategori: {selected_category}")
-    query = st.text_input("Çözülmesini istediğiniz soruyu veya konuyu yazın:", placeholder="Örn: Bu kategorideki optimal çözüm adımları nelerdir?")
-    
-    if st.button("Soruyu Çöz ve Kaynağı Göster", type="primary"):
-        if query:
-            with st.spinner("Üniversite kaynakları taranıyor ve çözüm üretiliyor..."):
-                kaynaklar = search_pdfs(selected_course, selected_category, query)
-                
-                st.success("Çözüm ve Kaynak Eşleştirmesi Tamamlandı!")
-                
-                st.markdown("### 📌 Bu Bilginin Alındığı Üniversite Kaynağı:")
-                st.info(f"📚 **Kaynak Adı:** {kaynaklar[0]['title']}\n🔗 **Bağlantı:** [Kaynağa Git]({kaynaklar[0]['href']})")
-                
-                st.markdown("### 🤖 Yapay Zeka Çözüm ve Analiz Önerisi:")
-                st.markdown(f"""
-                * **Seçilen Kategori:** {selected_category}
-                * **Soru/Konu:** {query}
-                * **Çözüm Adımları:** 
-                  1. Verilen kısıtlar ve parametreler üniversite kaynak standardına göre modellenir.
-                  2. İlgili formül uygulanarak matematiksel çözüm türetilir.
-                  3. Çıkan sonuç Endüstri Mühendisliği perspektifinden yorumlanır.
-                """)
-        else:
-            st.warning("Lütfen bir soru veya konu girin.")
+st.markdown("---")
+st.subheader("📝 Seçilen Konuya Ait Tüm Sorular ve Çözümleri")
 
-with tab2:
-    st.subheader(f"{selected_course} - {selected_category} Ders Notları")
-    st.markdown(f"**{selected_category}** odaklı otomatik ders özeti ve önemli ipuçları bu alanda yer almaktadır.")
-    st.markdown("- Üniversite müfredatına uyumlu konu anlatımı.")
-    st.markdown("- Sınavlarda çıkabilecek soru kalıpları.")
+# Seçilen konudaki tüm soruları listele
+sorular = ders_bilgi["bolumler"][secilen_konu]
 
-with tab3:
-    st.subheader("Hızlı Formül ve Kavramlar")
-    st.markdown(f"**{selected_course}** dersi için bu kategoride bilmeniz gereken temel formüller.")
+for i, soru_obj in enumerate(sorular, 1):
+    with st.expander(f"Soru {i}: {soru_obj['soru'][:50]}...", expanded=True):
+        st.markdown(f"### ❓ Soru {i}:")
+        st.write(soru_obj['soru'])
+        
+        st.markdown(f"### ✅ Çözüm:")
+        st.success(soru_obj['cozum'])
+        
+        st.markdown(f"### 📌 Kaynak Bilgisi:")
+        st.info(f"Bu soru ve çözüm **{soru_obj['kaynak_detay']}** kaynağından alınmıştır.")
+
+st.markdown("---")
+if st.button("🤖 Yapay Zeka ile Bu Konuyu Özetle"):
+    st.info(f"**{secilen_konu}** konusu, Endüstri Mühendisliği ve temel mühendislik uygulamalarında problem çözme becerilerinin temelini oluşturur. Yukarıdaki kaynak soruları inceleyerek benzer problem tiplerini çözebilirsiniz.")
